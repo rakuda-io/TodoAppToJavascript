@@ -55,6 +55,11 @@ span{
 .doneBtn:hover{
   background: #888;
 }
+.finished{
+  color: #F1F1F1;
+  text-decoration: line-through;
+  background: #BBB;
+}
 .deleteBtn{
   background: #FF6347;
   position: absolute;
