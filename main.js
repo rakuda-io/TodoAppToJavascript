@@ -35,5 +35,15 @@ const addTodos = (todo) => {
       const list = e.target.parentNode;
       list.classList.toggle('finished');
     });
+
+    // TODO削除
+    deleteBtn.addEventListener('click', e => {
+      e.preventDefault();
+      deleteTodo(deleteBtn);
+    });
+    const deleteTodo = (deleteBtn) => {
+      const chosenTask = deleteBtn.closest('li');
+      todoList.removeChild(chosenTask);
+    };
   };
 };
