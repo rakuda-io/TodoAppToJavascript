@@ -1,28 +1,66 @@
+.formContainer{
+  display: flex;
+  width: 30%;
+  min-width: 400px;
+}
+input{
+  height: 30px;
+  flex-grow: 1;
+  margin: 0 10px;
+}
+.addBtn{
+  background: #BBB;
+  margin-right: 20px;
+  padding-top: 7px;
+  flex-grow: 0;
+}
+.addBtn:hover{
+  background: #AAA;
+}
+.listContainer{
+  display: block;
+  margin-top: 30px;
+  position: relative;
+}
 ul{
-  width: 50%;
-  height: 50%;
-  padding: 5px 5px;
+  width: 30%;
+  min-width: 400px;
+  padding: 0 5px 5px;
+  display: block;
+  position: relative;
 }
 li{
   list-style: none;
-  margin: 2px 5px 5px;
-  padding: 10px;
-  background: #f1f1f1;
+  margin: 0 10px 10px;
+  padding: 15px;
+  background: #F1F1F1;
   border-radius: 10px;
+  position: relative;
 }
 span{
   font-size: 14px;
+  font-weight: bold;
   color: #333;
-  padding: 0 10px;
-  margin: 2px 3px;
+  padding: 5px 10px;
   text-align: center;
-  float: right;
   border-radius: 10px;
   cursor: pointer;
 }
 .doneBtn{
-  background: grey;
+  background: #999;
+  position: absolute;
+  top: 12px;
+  right: 95px;
+}
+.doneBtn:hover{
+  background: #888;
 }
 .deleteBtn{
-  background: red;
+  background: #FF6347;
+  position: absolute;
+  top: 12px;
+  right: 15px;
+}
+.deleteBtn:hover{
+  background: #FF4500;
 }
