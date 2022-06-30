@@ -3,21 +3,25 @@ console.log("Hello World")
 const inputTodo = document.getElementsByClassName('inputTodo')[0];
 const addBtn = document.getElementsByClassName('addBtn')[0];
 const todoList = document.getElementsByClassName('todoList')[0];
+const totalCount = document.getElementsByClassName('totalCount')[0];
+const doneCount = document.getElementsByClassName('doneCount')[0];
 
 // TODO追加
 addBtn.addEventListener('click', e => {
   e.preventDefault();
-  const todo = inputTodo.value;
-  addTodos(todo);
+  let todo = inputTodo.value;
+  addTodo(todo);
   inputTodo.value = '';
 });
 
-const addTodos = (todo) => {
+const addTodo = (todo) => {
   if(todo){
-    console.log(todo);
-    const listElement = document.createElement('li');
-    const listItem = todoList.appendChild(listElement);
+    let listElement = document.createElement('li');
+    let listItem = todoList.appendChild(listElement);
     listItem.innerHTML = todo;
+    let ul = listElement.parentNode;
+    totalCount.innerHTML = ul.childElementCount;
+    console.log(`[Add] ${todo}`);
 
     const doneBtn = document.createElement('span');
     doneBtn.className = 'doneBtn';
@@ -32,18 +36,24 @@ const addTodos = (todo) => {
     // TODO完了
     doneBtn.addEventListener('click', e => {
       e.preventDefault();
-      const list = e.target.parentNode;
+      let list = e.target.parentNode;
       list.classList.toggle('finished');
+      doneCount.innerHTML = document.getElementsByClassName('finished').length;
     });
 
     // TODO削除
     deleteBtn.addEventListener('click', e => {
       e.preventDefault();
       deleteTodo(deleteBtn);
+      ul = document.getElementsByClassName('todoList')[0];
+      totalCount.innerHTML = ul.childElementCount;
+      doneCount.innerHTML = document.getElementsByClassName('finished').length;
+      console.log(`[Delete] ${todo}`);
     });
     const deleteTodo = (deleteBtn) => {
-      const chosenTask = deleteBtn.closest('li');
-      todoList.removeChild(chosenTask);
+      let selected = deleteBtn.closest('li');
+      todoList.removeChild(selected);
     };
   };
 };
+
