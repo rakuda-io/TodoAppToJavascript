@@ -1,0 +1,87 @@
+.formContainer{
+  display: flex;
+  width: 30%;
+  min-width: 400px;
+}
+input{
+  height: 30px;
+  flex-grow: 1;
+  margin: 0 10px;
+}
+.addBtn{
+  background: #BBB;
+  margin-right: 20px;
+  padding-top: 7px;
+  flex-grow: 0;
+}
+.addBtn:hover{
+  background: #AAA;
+}
+.listContainer{
+  display: block;
+  margin-top: 30px;
+  position: relative;
+}
+.countContainer{
+  display: flex;
+  margin-left: 10px;
+}
+.total, .done, .totalCount, .doneCount{
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  padding-right: 0;
+  padding-left: 10px;
+  cursor: default;
+}
+.totalCount, .doneCount{
+  padding-right: 20px;
+  padding-left: 0;
+}
+ul{
+  width: 30%;
+  min-width: 400px;
+  padding: 0 5px 5px;
+  display: block;
+  position: relative;
+}
+li{
+  list-style: none;
+  margin: 0 10px 10px;
+  padding: 15px;
+  background: #F1F1F1;
+  border-radius: 10px;
+  position: relative;
+}
+span{
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  padding: 5px 10px;
+  text-align: center;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.doneBtn{
+  background: #999;
+  position: absolute;
+  top: 12px;
+  right: 95px;
+}
+.doneBtn:hover{
+  background: #888;
+}
+.finished{
+  color: #F1F1F1;
+  text-decoration: line-through;
+  background: #BBB;
+}
+.deleteBtn{
+  background: #FF6347;
+  position: absolute;
+  top: 12px;
+  right: 15px;
+}
+.deleteBtn:hover{
+  background: #FF4500;
+}
