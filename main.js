@@ -7,6 +7,7 @@ const totalCount = document.getElementsByClassName('totalCount')[0];
 const doneCount = document.getElementsByClassName('doneCount')[0];
 let data = [];
 let id = 0;
+// let status = 'WIP';
 
 // ページ読み込み時の処理
 window.addEventListener('DOMContentLoaded', e => {
@@ -28,6 +29,7 @@ const displayTodo = (todo) => {
   const doneBtn = document.createElement('span');
   doneBtn.className = 'doneBtn';
   doneBtn.innerHTML = 'Done';
+  doneBtn.setAttribute('id', `${id}`);
   listElement.appendChild(doneBtn);
 
   const deleteBtn = document.createElement('span');
@@ -41,9 +43,10 @@ const displayTodo = (todo) => {
   doneBtn.addEventListener('click', e => {
     e.preventDefault();
     let list = e.target.parentNode;
-    list.classList.toggle('finished');
+    list.classList.toggle('done');
+    doneTodo(doneBtn);
     // カウント数を更新
-    doneCount.innerHTML = document.getElementsByClassName('finished').length;
+    doneCount.innerHTML = document.getElementsByClassName('done').length;
   });
 
   // DeleteBtnを監視
@@ -53,27 +56,41 @@ const displayTodo = (todo) => {
     // カウント数を更新
     ul = document.getElementsByClassName('todoList')[0];
     totalCount.innerHTML = ul.childElementCount;
-    doneCount.innerHTML = document.getElementsByClassName('finished').length;
+    doneCount.innerHTML = document.getElementsByClassName('done').length;
   });
+
+  // TODOのステータスをトグルする関数
+  const doneTodo = (doneBtn) => {
+    let matchedData = data.find(value => value.id == doneBtn.getAttribute('id'));
+    if(doneBtn.parentNode.className == 'done') {
+      matchedData.status = 'DONE';
+      console.log(`[Changed to DONE] ${todo}`);
+    } else {
+      matchedData.status = 'WIP';
+      console.log(`[Changed to WIP] ${todo}`);
+    };
+    console.log(data);
+  };
 
   // TODOを削除する関数
   const deleteTodo = (deleteBtn) => {
+    // DOMを削除
+    let deleteDom = deleteBtn.closest('li');
+    todoList.removeChild(deleteDom);
     // data配列から削除
     data = data.filter(i => i.id.toString() !== deleteBtn.getAttribute('id'));
     console.log(`[Deleted] ${todo}`);
     console.log(data);
-    // DOMを削除
-    let deletedTodo = deleteBtn.closest('li');
-    todoList.removeChild(deletedTodo);
   };
 };
 
 // TODO追加
 addBtn.addEventListener('click', e => {
   e.preventDefault();
-  let input = inputTodo.value;
-  if(input && !(data.some(d => d.title === input))){
-    addTodo(input);
+  let inputValue = inputTodo.value;
+
+  if(inputValue && !(data.some(d => d.title === inputValue))){
+    addTodo(inputValue);
     displayTodo(data.slice(-1)[0].title);
   } else {
     console.log('[error] 同じ名前は登録出来ません')
@@ -82,7 +99,9 @@ addBtn.addEventListener('click', e => {
 });
 
 // TODOを追加する関数
-const addTodo = (todo) => {
-  data.push({id: id, title: todo});
+const addTodo = (inputValue) => {
+  let initStatus = 'WIP';
+  data.push({id: id, title: inputValue, status: initStatus});
+  console.log(`[Added] ${inputValue}`);
   console.log(data);
 };
