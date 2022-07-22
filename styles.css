@@ -26,7 +26,7 @@ input{
   display: flex;
   margin-left: 10px;
 }
-.total, .done, .totalCount, .doneCount{
+#total, #done, .totalCount, .doneCount{
   font-size: 14px;
   font-weight: bold;
   color: #333;
@@ -71,7 +71,7 @@ span{
 .doneBtn:hover{
   background: #888;
 }
-.finished{
+.done{
   color: #F1F1F1;
   text-decoration: line-through;
   background: #BBB;
