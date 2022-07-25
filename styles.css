@@ -8,13 +8,13 @@ input{
   flex-grow: 1;
   margin: 0 10px;
 }
-.addBtn{
+.submitBtn{
   background: #BBB;
   margin-right: 20px;
   padding-top: 7px;
   flex-grow: 0;
 }
-.addBtn:hover{
+.submitBtn:hover{
   background: #AAA;
 }
 .listContainer{
