@@ -3,20 +3,45 @@ const submitBtn = document.getElementsByClassName('submitBtn')[0];
 const todoList = document.getElementsByClassName('todoList')[0];
 const totalCount = document.getElementsByClassName('totalCount')[0];
 const doneCount = document.getElementsByClassName('doneCount')[0];
-let data = [{id: 0, title: 'Javascriptの勉強', status: 'wip'}, {id: 1, title: '子供の寝かしつけ', status: 'done'}];
-let id = 2;
 
-// ページ読み込み時の処理
+// ローカルストレージ
+let storage = {};
+let id = 0;
+storage.key = 'todoList';
+// 追加
+storage.add = function (item) {
+  let todo = this.get();
+  todo.push(item);
+  localStorage.setItem(this.key, JSON.stringify(todo));
+};
+// 取得
+storage.get = function() {
+  let todos = localStorage.getItem(this.key);
+  if (todos == null) {
+    return [];
+  } else {
+    return JSON.parse(todos);
+  };
+};
+// dataオブジェクトを作成
+let data = storage.get();
+// storage上の最後のdataの次のIDをセット
+if(data.length > 0) {
+  id = data.slice(-1)[0].id + 1;
+};
+
+// 初回読み込み時の処理
 window.addEventListener('DOMContentLoaded', event => {
   event.preventDefault();
+  orderByStatus();
   data.forEach(todo => {
-    buildTodo(todo.title);
+    displayTodo(todo.title);
   });
   console.log("Hello World");
 });
 
-// TODOのリスト表示
-const buildTodo = (todo) => {
+// TODOのリストのDOM生成
+const displayTodo = (todo) => {
   // data配列から該当データを取得
   let matchedData = data.find(v => v.title == todo);
 
@@ -38,57 +63,52 @@ const buildTodo = (todo) => {
   deleteBtn.setAttribute('id', `${matchedData.id}`);
   listElement.appendChild(deleteBtn);
 
+  addFuction(submitBtn);
   doneFuction(doneBtn);
   deleteFunction(deleteBtn);
   updateCounter();
 };
 
 // TODO追加機能
-submitBtn.addEventListener('click', event => {
-  event.preventDefault();
-  let inputValue = inputArea.value;
-  // バリデーション
-  if(inputValue && !(data.some(v => v.title === inputValue))){
-    // data配列に追加
-    addData(inputValue);
-    orderByStatus();
-    rebuildTodoList();
-  } else {
-    console.log('[Error] 同じ名前は登録出来ません')
-  }
-  // 入力欄を空に
-  inputArea.value = '';
-});
+const addFuction = (submitBtn) => {
+  // submitBtnを監視
+  submitBtn.addEventListener('click', event => {
+    event.preventDefault();
+    let inputValue = inputArea.value;
+    // バリデーション
+    if(inputValue && !(data.some(v => v.title === inputValue))){
+      // ストレージに新しいTODOを追加して再描画
+      storage.add({id: id, title: inputValue, status: 'wip'});
+      id += 1;
+      data = storage.get();
+      orderByStatus();
+      rebuildTodoList();
+      console.log(`[Added] ${inputValue}`);
+      console.log(data);
+    } else {
+      console.log('[Error] 同じ名前は登録出来ません')
+    }
+    // 入力欄をリセット
+    inputArea.value = '';
+  });
+};
 
 // TODO完了機能
 const doneFuction = (doneBtn) => {
   // DoneBtnを監視
   doneBtn.addEventListener('click', event => {
     event.preventDefault();
-    let list = e.target.parentNode;
+    let list = event.target.parentNode;
+    // liタグのクラスを切り替え
     list.classList.toggle('done');
     list.classList.toggle('wip');
+    // ローカルストレージのステータスも切り替え
     toggleStatus(doneBtn);
-  });
-
-  // ステータスを切り替え
-  const toggleStatus = (doneBtn) => {
-    let matchedData = data.find(v => v.id == doneBtn.getAttribute('id'));
-
-    if(doneBtn.parentNode.className == 'done') {
-      matchedData.status = 'done';
-      console.log(`[Changed to DONE] ${matchedData.title}`);
-    } else {
-      matchedData.status = 'wip';
-      console.log(`[Changed to WIP] ${matchedData.title}`);
-    };
-
-    // Statusに応じて並べ替えしてリストを再描画
-    orderByStatus();
+    // 並べ替えを適用して再描画
     rebuildTodoList();
     updateCounter();
     console.log(data);
-  };
+  });
 };
 
 // TODO削除機能
@@ -98,44 +118,26 @@ const deleteFunction = (deleteBtn) => {
     event.preventDefault();
     deleteTodo(deleteBtn);
     updateCounter();
+    console.log(data);
   });
 
-  // TODOを削除する関数
-  const deleteTodo = (deleteBtn) => {
-    console.log(`[Deleted] ${(data.find(v => v.id == deleteBtn.getAttribute('id'))).title}`);
-    // DOMを削除
-    let deleteDom = deleteBtn.closest('li');
-    todoList.removeChild(deleteDom);
-    // data配列から削除
-    data = data.filter(v => v.id.toString() !== deleteBtn.getAttribute('id'));
-    console.log(data);
-  };
-};
-
-// dataに新しいTODOを追加する関数
-const addData = (inputValue) => {
-  data.push({id: id, title: inputValue, status: 'wip'});
-  id += 1;
-  console.log(`[Added] ${inputValue}`);
-  console.log(data);
 };
 
 // TODOリストのDOMを再構築する関数
 const rebuildTodoList = () => {
-  // リストを初期化
+  // DOMを初期化
   while( todoList.firstChild ){
     todoList.removeChild( todoList.firstChild );
   };
-  // リストを再描画
+  orderByStatus();
   data.forEach(todo => {
-    buildTodo(todo.title);
+    displayTodo(todo.title);
   });
 };
 
 // Statusで並べ替えする関数
-const orderByStatus = () => {
-  data.sort((a,b) => a.id - b.id);
-  data.sort((a,b) => a.status.length-b.status.length);
+const orderByStatus = () => { 
+  data.sort((a,b) => a.id - b.id && a.status.length-b.status.length);
 };
 
 // カウント数を更新する関数
@@ -143,3 +145,32 @@ const updateCounter = () => {
   totalCount.innerHTML = data.length;
   doneCount.innerHTML = data.filter(value => value.status == 'done').length;
 };
+
+// TODOの完了ステータスを切り替える関数
+const toggleStatus = (doneBtn) => {
+  data = storage.get() 
+  let matchedData = data.find(v => v.id == doneBtn.getAttribute('id'));
+  if(matchedData.status == 'wip') {
+    matchedData.status = 'done';
+    console.log(`[Changed to DONE] ${matchedData.title}`);
+  } else {
+    matchedData.status = 'wip';
+    console.log(`[Changed to WIP] ${matchedData.title}`);
+  }
+  localStorage.setItem('todoList', JSON.stringify(data));
+  data = storage.get();
+};
+
+// TODOを削除する関数
+const deleteTodo = (deleteBtn) => {
+  data = storage.get() 
+  console.log(`[Deleted] ${(data.find(v => v.id == deleteBtn.getAttribute('id'))).title}`);
+  // DOMを削除
+  let deleteDom = deleteBtn.closest('li');
+  todoList.removeChild(deleteDom);
+  // data配列から削除
+  data = data.filter(v => v.id.toString() !== deleteBtn.getAttribute('id'));
+  localStorage.setItem('todoList', JSON.stringify(data));
+  data = storage.get() 
+};
+
